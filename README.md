@@ -16,7 +16,6 @@ Execute the program by passing one argument corresponding to the integer number 
 ## Features
 - Handles deadlock and starvation cases,
 - Uses condition variable and mutex for managing shared resources,
-- Utilizing 'ncurses.h' library helps with real-time visualization of excecuted program.
-## Future changes
-- ~~Implement usage of smart pointers instead of raw pointers for improved memory management.~~
+- Utilizing 'ncurses.h' library helps with real-time visualization of executed program.
+
 
