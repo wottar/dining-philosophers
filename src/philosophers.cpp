@@ -56,11 +56,13 @@ void Filozof(size_t id, size_t filozofowie) {
     WINDOW *status_win  = newwin(1, COLS / 3, id + 1, COLS / 3);
     WINDOW *widelce_win = newwin(1, COLS / 3, id + 1, 2 * COLS / 3);
 
+    // PSEUDO-RANDOM NUMBERS GENERATOR
+    std::random_device rd;
+    std::mt19937 mt(rd()); 
+    std::uniform_int_distribution<int> dist(1000, 2000);
+
     while (running) {
-        // PSEUDO-RANDOM NUMBERS GENERATOR
-        std::random_device rd;
-        std::mt19937 mt(rd()); //mersenne twister generator lcizb losowych do losowego czasu jedzenia przez filozofa
-        std::uniform_int_distribution<int> dist(1000, 2000);
+        
         int random_time = dist(mt);
 
         // -----THINKS-----
@@ -82,7 +84,7 @@ void Filozof(size_t id, size_t filozofowie) {
         if (id % 2 == 1) {
             std::swap(lewy_widelec_id, prawy_widelec_id);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(dist(mt)));
         if (!running) break;
 
         // -----TAKE LEFT FORK-----
@@ -133,19 +135,19 @@ void Filozof(size_t id, size_t filozofowie) {
         std::this_thread::sleep_for(std::chrono::milliseconds(random_time));
 
         // -----PUT OFF LEFT FORK-----
-        terminal_lock.lock();
         ma_widelec[lewy_widelec_id] = false;
         lewy_widelec_lock.unlock();
         cv[lewy_widelec_id]->notify_one();
+        terminal_lock.lock();
         mvwprintw(widelce_win, 0, 0, " ");
         wrefresh(widelce_win);
         terminal_lock.unlock();
 
         // -----PUT OFF RIGHT FORK-----
-        terminal_lock.lock();
         ma_widelec[prawy_widelec_id] = false;
         prawy_widelec_lock.unlock();
         cv[prawy_widelec_id]->notify_one();
+        terminal_lock.lock();
         mvwprintw(widelce_win, 0, 0, "   ");
         wrefresh(widelce_win);
         terminal_lock.unlock();
